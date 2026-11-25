@@ -42,6 +42,7 @@ import com.sonymobile.scan3d.storageservice.ui.fragment.BackupSyncSettings;
 import com.sonymobile.scan3d.storageservice.ui.gallery.GalleryFragment;
 import com.sonymobile.scan3d.storageservice.utils.FsUtils;
 import com.sonymobile.scan3d.utils.SharingUtil;
+import com.sonymobile.scan3d.utils.SystemUtils;
 import com.sonymobile.scan3d.viewer.ViewerActivity;
 import com.sonymobile.scan3d.viewer.YesNoQuestionFragment;
 import com.sonymobile.scan3d.widgets.SphinxProgressDialog;
@@ -123,7 +124,8 @@ public class GalleryActivity extends FragmentActivity implements IScanListener, 
         }
         this.mMonitor = new IdleMonitor();
         this.mHandler = new Handler(this);
-        if (ZipResourceManager.expansionLoaded()) {
+        // 沒有 Google Play 服務時無法下載擴充檔（範例掃描），略過下載，避免進度對話框永遠轉圈
+        if (ZipResourceManager.expansionLoaded() || !SystemUtils.isGooglePlayServicesAvailable(this)) {
             return;
         }
         Intent intent2 = new Intent(this, (Class<?>) GalleryActivity.class);
